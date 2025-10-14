@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Веб-дневник заметок</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Веб-дневник заметок</h1>
+            <p>Создавайте, редактируйте и организуйте ваши мысли</p>
+        </header>
+
+        <div class="controls">
+            <button id="addNoteBtn">Добавить заметку</button>
+            <div class="sort-options">
+                <button id="sortNewest">Сначала новые</button>
+                <button id="sortOldest">Сначала старые</button>
+            </div>
+        </div>
+        <div class="search-filter">
+            <input type="text" id="tagFilter" placeholder="Фильтр по тегу...">
+            <button id="clearFilter">Очистить</button>
+        </div>
+
+        <div id="notesList" class="notes-list">
+            <!-- Заметки будут добавляться здесь -->
+        </div>
+
+        <!-- Модальное окно для создания/редактирования заметки -->
+        <div id="noteModal" class="modal">
+            <div class="modal-content">
+                <h2 id="modalTitle">Новая заметка</h2>
+                <form id="noteForm">
+                    <div class="form-group">
+                        <label for="noteTitle">Заголовок</label>
+                        <input type="text" id="noteTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="noteTags">Теги (через запятую)</label>
+                        <input type="text" id="noteTags" placeholder="например: работа, личное, идея">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="notePinned"> Закрепить заметку
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="noteContent">Содержание</label>
+                        <textarea id="noteContent" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="cancelBtn">Отмена</button>
+                        <button type="submit" id="saveBtn">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
