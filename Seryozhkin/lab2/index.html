@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Веб-аукцион картин</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fafafa;
+      margin: 40px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+    form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #art-list {
+      max-width: 600px;
+      margin: auto;
+    }
+    .art-item {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .art-info {
+      flex-grow: 1;
+    }
+    .bid-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+    .end-btn {
+      display: block;
+      margin: 30px auto;
+      background-color: #FF5722;
+    }
+    #winner {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Веб-аукцион картин</h1>
+
+  <form id="add-art-form">
+    <input type="text" id="title" placeholder="Название картины" required>
+    <input type="text" id="author" placeholder="Автор" required>
+    <input type="number" id="price" placeholder="Начальная цена" required>
+    <button type="submit">Добавить</button>
+  </form>
+
+  <div id="art-list"></div>
+
+  <button id="end-auction" class="end-btn">Завершить торги</button>
+
+  <div id="winner"></div>
+
+  <script>
+    // ====== Логика аукциона ======
+    let artworks = JSON.parse(localStorage.getItem('artworks')) || [];
+
+    const artList = document.getElementById('art-list');
+    const form = document.getElementById('add-art-form');
+    const winnerDiv = document.getElementById('winner');
+
+    // Сохранение в localStorage
+    function saveData() {
+      localStorage.setItem('artworks', JSON.stringify(artworks));
+    }
+
+    // Отрисовка списка картин
+    function render() {
+      artList.innerHTML = '';
+      artworks.forEach((art, index) => {
+        const item = document.createElement('div');
+        item.className = 'art-item';
+        item.innerHTML = `
+          <div class="art-info">
+            <strong>${art.title}</strong> — ${art.author} <br>
+            Текущая цена: <span id="price-${index}">${art.price}</span> ₽
+          </div>
+          <button class="bid-btn" onclick="makeBid(${index})">Сделать ставку</button>
+        `;
+        artList.appendChild(item);
+      });
+    }
+
+    // Добавление картины
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('title').value.trim();
+      const author = document.getElementById('author').value.trim();
+      const price = parseFloat(document.getElementById('price').value);
+      if (!title || !author || isNaN(price)) return;
+
+      artworks.push({ title, author, price });
+      saveData();
+      render();
+      form.reset();
+    });
+
+    // Сделать ставку (+10%)
+    function makeBid(index) {
+      artworks[index].price = Math.round(artworks[index].price * 1.1);
+      saveData();
+      render();
+    }
+
+    // Завершение торгов
+    document.getElementById('end-auction').addEventListener('click', () => {
+      if (artworks.length === 0) {
+        winnerDiv.textContent = 'Нет картин для торгов.';
+        return;
+      }
+      const max = artworks.reduce((prev, curr) => curr.price > prev.price ? curr : prev);
+      winnerDiv.textContent = `🏆 Победила картина "${max.title}" (${max.author}) с ценой ${max.price} ₽!`;
+    });
+
+    // Инициализация
+    render();
+  </script>
+</body>
+</html>
